@@ -1,27 +1,55 @@
-import React from "react";
-import Post from "../components/Post" 
+import { Link } from "react-router-dom";
+import { useState, useContext, useEffect } from "react";
+import { UserContext } from "../context/UserContext";
+import { useParams } from "react-router-dom";
+import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2';
+const baseURL = import.meta.env.VITE_BASE_URL;
 
-const PostPage = () => {
+
+const PostPage = ({_id, cover, title, createdAt, author, summary}) => {
+    const [postInfo, setPostsInfo] = useState(null);
+    const [userInfo ] = useContext(UserContext);
+    const {id} = useParams();
+    useEffect(() => {
+        fetch(`${baseURL}/post`).then((Response) => {
+            Response.json().then((postInfo) => {
+                setPosts(postInfo);
+            })
+        })
+    }, [])
     return (
         <div className="post-page">
-            <h1>
-                {" "}
-                เรื่องย่อ สัปเหร่อ หนังสุดหลอนในจักรวาลไทบ้านเดอะซีรีส์
-            </h1>
-            <time>25 ต.ค. 66 (21:23 น.)</time>
-            <div className="author">Nawaporn</div>
+            <div className="image">
+                <Link to={`/post/${_id}`}>
+                    <img src={`${baseURL}/${cover}`} alt="" />
+                </Link>
+            </div>
+            <h1>{postInfo.title}</h1>
+            <time>{format(new Date(postInfo.createdAt), "dd MMMM yyyy HH:MM")}</time>
+            <div className="author">By @{postInfo.author.username}</div>
+            {userInfo?.id === postInfo.author._id && (
+                <div className="edit-row">
+                    <Link className="edit-btn" to={`/edit/${postInfo._id}`}>
+                        <svg>
+                            xmlns=""
+                            fill= "none"
+                            viewBox=" 0 0 24 24"
+                            strokeWidth = {1.5}
+
+                        </svg>
+                        Edit this post
+                    </Link>
+                </div>
+                
+            )}
             <div className="image">
                 <img 
-                src="https://s.isanook.com/mv/0/ud/31/156675/sappaler.jpg?ip/crop/w728h431/q80/webp"
-                alt=""
+                src={`${baseURL}/${postInfo.cover}`} alt=""
                 />
             </div>
-            <p className="summary">
-            ภาพยนตร์เรื่อง สัปเหร่อ ยังได้รับเสียงชื่นชมในด้านความแปลกใหม่
-            เพราะเป็นภาพยนตร์สยองขวัญ-ตลกที่ฉีกแนวจากภาพยนตร์สยองขวัญทั่วไป
-            ภาพยนตร์เรื่องนี้มีฉากตลกขำขันแทรกอยู่ตลอดเรื่อง ความเศร้า และความสะพรึงกลัว
-            ผู้ชมที่ชื่นชอบภาพยนตร์สยองขวัญผสมคอมเมดี้จึงไม่ควรพลาดภาพยนตร์เรื่องนี้
-            </p>
+           <div className="content" dangerouslySetInnerHTML={{__html: postInfo.context}}></div>
         </div>
     );
 };

@@ -1,31 +1,40 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import {format} from "date-fns";
+import { Link } from 'react-router-dom';
 
-const Post =() => {
-    return(
-        <div className="post">
-            <div className="image">
-                <Link>
-                <img src="https://www.sanook.com/movie/156675/" alt=""/>
-                </Link>
+const baseURL = import.meta.env.VITE_BASE_URL;
+
+const Post = ({ _id, cover, title, author, createdAt, summary }) => {
+    const formattedDate = format(new Date(createdAt), 'dd MM yyyy HH:MM');
+  
+    return (
+      <>
+        <div className="flex mt-6 items-center justify-center">
+          <div className="relative flex w-full max-w-[48rem] flex-row rounded-xl text-gray-700 shadow-md">
+            <div className="relative m-0 w-2/6 shrink-0 overflow-hidden rounded-xl rounded-r-none  text-gray-700">
+              <Link to={`/post/${_id}`}>
+                <img
+                  src={`${baseURL}/${cover}`}
+                  alt="image"
+                  className="h-full w-full object-cover"
+                />
+              </Link>
             </div>
-            <div className="texts">
-                <Link>
-                <h2>
-                สัปเหร่อ เป็นภาพยนตร์แนวสยองขวัญ-ตลก 
-                จะเข้าฉายวันที่ 5 ตุลาคม 2566 กำกับโดย ธิติ ศรีนวล ภาพยนตร์เรื่องนี้เป็นภาคแยกจากซีรีส์เรื่อง
-                 ไทบ้านเดอะซีรีส์ โดยเล่าเรื่องราวของ 
-                </h2>
-                </Link>
-                <p className="info">
-                    <a href="" className="author">
-                        
-                    </a>
-                </p>
+            <div className="p-6">
+              <h4 className="mb-2 block font-sans text-2xl font-semibold leading-snug tracking-normal text-blue-gray-900 antialiased">
+                {title}
+              </h4>
+              <p className="mb-8 block font-sans text-base font-normal leading-relaxed text-gray-700 antialiased">
+                {summary} <br></br> {author.username} <br></br> {formattedDate}
+              </p>
             </div>
+          </div>
         </div>
-    )
-}
+  
+  
+      </>
+    );
+  };
 
 
 export default Post;

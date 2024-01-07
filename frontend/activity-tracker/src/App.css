@@ -157,3 +157,16 @@ form.login h1,
 form.register h1 {
     text-align: center;
 }
+
+.image-container {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .image-container img {
+    transition: transform 0.3s ease;
+  }
+  
+  .image-container:hover img {
+    transform: scale(1.2); /* ทำให้ภาพขยายขึ้น 20% เมื่อ hover */
+  }
